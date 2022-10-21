@@ -13,6 +13,7 @@ DSK_USG_PRCNT=`df -BG -P --total | grep total | awk '{ printf("%.1f%%\n", $3/$2 
 CPU_USG=`iostat -ch --pretty | sed -n '4p' | awk '{ printf("%.1f%%\n", 100.0 - $6) }' | sed s/,/./`
 LST_BOOT_DT=`who -b | awk '{ print $4}'`
 LST_BOOT_HR=`who -b | awk '{ print $5}'`
+LVM_CHECK=`lsblk | grep lvm | awk '{if ($1) { print "yes"; exit;} else {print "no"}}'`
 TCP_CON=`netstat | grep tcp | wc -l`
 USR_CNT=`who -q | grep -o '[0-9]*'`
 IP_ADRS=`hostname -I`
@@ -26,7 +27,7 @@ wall "#Architecture: ${HW}
 #Disk Usage: ${DSK_USG}/${DSK_SIZE}b (${DSK_USG_PRCNT})
 #CPU load: ${CPU_USG}
 #Last boot: ${LST_BOOT_DT} ${LST_BOOT_HR}
-#LVM use: yes
+#LVM use: ${LVM_CHECK}
 #Connections TCP : ${TCP_CON} ESTABLISHED
 #User log: ${USR_CNT}
 #Network: ${IP_ADRS} IP (${MAC_ADRS})
