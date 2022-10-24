@@ -2,10 +2,10 @@
 
 # monitoring.sh
 
-# This script displays a message with important system informations to all terminals of a debian based server.
-
 # Created by: dmatavel
 # Mail: dmatavel@student.42.rio
+
+# This script displays a message with important system informations to all terminals of a debian based server.
 
 # Set up variables and colletc informations:
 
@@ -56,7 +56,8 @@ LST_BOOT_HR=`who -b | awk '{ print $5}'`
 LVM_CHECK=`lsblk | grep -o "lvm" | awk 'NF==1 { if ($1 == "lvm") { print "yes"; exit; } else { print "no"; exit; } }'`
 
 # Count the number active TCP connections:
-# Note: You need to install netstat package in order to get this working; alternatively, you may to substitute netstat by 'ss -l'.
+# Note: You need to install netstat package in order to get this working;
+# alternatively, you may to substitute netstat by 'ss -l'.
 
 TCP_CON=`netstat | grep -c tcp`
 
