@@ -42,7 +42,6 @@ DSK_SIZE=`df -BG -P --total | grep total | awk '{print $2}' | sed s/M/\/`
 DSK_USG_PRCNT=`df -BG -P --total | grep total | awk '{ printf("%.1f%%\n", $3/$2 * 100.0) }' | sed s/,/./g`
 
 # Display the amount of CPU in use as a percentage:
-# Note: You need to install sysstat package in order to use 'iostat' command.
 
 CPU_USG=`iostat -ch --pretty | sed -n '4p' | awk '{ printf("%.1f%%\n", 100.0 - $6) }' | sed s/,/./`
 
@@ -51,13 +50,11 @@ CPU_USG=`iostat -ch --pretty | sed -n '4p' | awk '{ printf("%.1f%%\n", 100.0 - $
 LST_BOOT_DT=`who -b | awk '{ print $4}'`
 LST_BOOT_HR=`who -b | awk '{ print $5}'`
 
-# Check if there is any logical partition in your disk and display a "yes" or "no" message:
+# Check if there is any logical partition in your disk:
 
 LVM_CHECK=`lsblk | grep -o "lvm" | awk 'NF==1 { if ($1 == "lvm") { print "yes"; exit; } else { print "no"; exit; } }'`
 
-# Count the number active TCP connections:
-# Note: You need to install netstat package in order to get this working;
-# alternatively, you may to substitute netstat by 'ss -l'.
+# Count the number of active TCP connections:
 
 TCP_CON=`netstat | grep -c tcp`
 
@@ -74,14 +71,6 @@ IP_ADRS=`hostname -I`
 MAC_ADRS=`ip -o link show | sed -n '2p' | awk '{ print $17 }'`
 
 # Collect and display the number of commands executed with the sudo program:
-# Note: You need to configure your sudoers file via 'sudo visudo' in order to get this working.
-# To do that. follow these steps bellow:
-# 1) 'sudo mkdir /var/log/sudo/sudo.log'
-# 2) Open your sudoers file with 'sudo visudo':
-# 3) Add the following lines to the file:
-#	Defaults        logfile="/var/log/sudo/sudo.log"
-#	Defaults        log_input,log_output
-#	Defaults        iolog_dir="/var/log/sudo"
 
 SUDO_CNT=`cat /var/log/sudo/sudo.log | wc -l | awk '{print ($f1/2)}'`
 
@@ -99,3 +88,18 @@ wall "#Architecture: ${HW}
 #User log: ${USR_CNT}
 #Network: ${IP_ADRS} IP (${MAC_ADRS})
 #Sudo : ${SUDO_CNT} cmd"
+
+# Notes:
+
+# - You need to install sysstat package in order to use 'iostat' command.
+# - You need to install netstat package in order to use 'netstat' command;
+# alternatively, you may to substitute 'netstat' by 'ss -l'.
+# - You need to configure your sudoers file via 'sudo visudo' in order to get 
+# the number of commands executed with the sudo program;
+# to do that, follow the steps bellow:
+# 1) 'sudo mkdir /var/log/sudo/sudo.log'
+# 2) Open your sudoers file with 'sudo visudo':
+# 3) Add the following lines to the file:
+#	Defaults        logfile="/var/log/sudo/sudo.log"
+#	Defaults        log_input,log_output
+#	Defaults        iolog_dir="/var/log/sudo"
