@@ -1,24 +1,90 @@
 #!/bin/bash
 
-# variables
+# monitoring.sh
+
+# This script displays a message with important system informations to all terminals of a debian based server.
+
+# Created by: dmatavel
+# Mail: dmatavel@student.42.rio
+
+# Set up variables and colletc informations:
+
+# Display the architecture of the operating system and its kernel version:
 
 HW=`uname -a`
-CPU=`grep process /proc/cpuinfo | wc -l`
+
+# Count the number of processors in the machine:
+
+CPU=`grep -c process /proc/cpuinfo`
+
+# Collect the amount of RAM in use:
+
 MEM_USG=`free -m | grep Mem | awk '{print $3}'`
+
+# Collect the total RAM:
+
 MEM_SIZE=`free -m | grep Mem | awk '{print $2}'`
-MEM_USG_PRCNT=`free -m | grep Mem | awk '{ printf("%.2f%%\n", ($3 x 1/100 x $2) / 100) }' | sed s/,/./g`
+
+# Show the amount of RAM in use as a percentage:
+
+MEM_USG_PRCNT=`free -m | grep Mem | awk '{ printf("%.2f%%\n", $3 * 100 / $2) }' | sed s/,/./g`
+
+# Collect the ammount of the disk memory in use:
+
 DSK_USG=`df -BM -P --total | grep total | awk '{print $3}' | sed s/M/\/`
+
+# Collect the total disk size:
+
 DSK_SIZE=`df -BG -P --total | grep total | awk '{print $2}' | sed s/M/\/`
+
+# Display the current disk memory in use as a percentage:
+
 DSK_USG_PRCNT=`df -BG -P --total | grep total | awk '{ printf("%.1f%%\n", $3/$2 * 100.0) }' | sed s/,/./g`
+
+# Display the amount of CPU in use as a percentage:
+# Note: You need to install sysstat package in order to use 'iostat' command.
+
 CPU_USG=`iostat -ch --pretty | sed -n '4p' | awk '{ printf("%.1f%%\n", 100.0 - $6) }' | sed s/,/./`
+
+# Display the last date and hour of the last machine's boot:
+
 LST_BOOT_DT=`who -b | awk '{ print $4}'`
 LST_BOOT_HR=`who -b | awk '{ print $5}'`
-LVM_CHECK=`lsblk | grep lvm | awk '{if ($1) { print "yes"; exit;} else {print "no"}}'`
-TCP_CON=`netstat | grep tcp | wc -l`
+
+# Check if there is any logical partition in your disk and display a "yes" or "no" message:
+
+LVM_CHECK=`lsblk | grep -o "lvm" | awk 'NF==1 { if ($1 == "lvm") { print "yes"; exit; } else { print "no"; exit; } }'`
+
+# Count the number active TCP connections:
+# Note: You need to install netstat package in order to get this working; alternatively, you may to substitute netstat by 'ss -l'.
+
+TCP_CON=`netstat | grep -c tcp`
+
+# Collect the number of users current logged on the server:
+
 USR_CNT=`who -q | grep -o '[0-9]*'`
+
+# Display the machine's IP address:
+
 IP_ADRS=`hostname -I`
+
+# Collect and display machine's MAC address:
+
 MAC_ADRS=`ip -o link show | sed -n '2p' | awk '{ print $17 }'`
+
+# Collect and display the number of commands executed with the sudo program:
+# Note: You need to configure your sudoers file via 'sudo visudo' in order to get this working.
+# To do that. follow these steps bellow:
+# 1) 'sudo mkdir /var/log/sudo/sudo.log'
+# 2) Open your sudoers file with 'sudo visudo':
+# 3) Add the following lines to the file:
+#	Defaults        logfile="/var/log/sudo/sudo.log"
+#	Defaults        log_input,log_output
+#	Defaults        iolog_dir="/var/log/sudo"
+
 SUDO_CNT=`cat /var/log/sudo/sudo.log | wc -l | awk '{print ($f1/2)}'`
+
+# Send system information message to all terminals of the server:
 
 wall "#Architecture: ${HW}
 #CPU physical : ${CPU}
