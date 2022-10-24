@@ -6,6 +6,8 @@
 # Mail: dmatavel@student.42.rio
 
 # This script displays a message with important system informations to all terminals of a debian based server.
+# It was created a part of the "born2beroot" project of the 42 School.
+# Check the notes in the end of this file to additional infos about how this script works.
 
 # Set up variables and colletc informations:
 
