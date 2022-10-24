@@ -4,13 +4,13 @@
 
 # By: dmatavel <dmatavel@student.42.rio>
 
-# This script displays a message with important system informations to all terminals of a debian based server.
-# It was created a part of the "born2beroot" project of the 42 School.
-# Check the notes in the end of this file to additional infos about how this script works.
+# This script displays a message with important system information to all terminals of a Debian-based server.
+# It was created as a part of the "born2beroot" project of the 42 School.
+# Check the notes at the end of this file for additional information about how this script works.
 
-# Set up variables and colletc informations:
+# Set up variables and colletc informatiom:
 
-# Display the architecture of the operating system and its kernel version:
+# Displays the operating system's architecture and kernel version:
 
 HW=`uname -a`
 
@@ -30,7 +30,7 @@ MEM_SIZE=`free -m | grep Mem | awk '{print $2}'`
 
 MEM_USG_PRCNT=`free -m | grep Mem | awk '{ printf("%.2f%%\n", $3 * 100 / $2) }' | sed s/,/./g`
 
-# Collect the ammount of the disk memory in use:
+# Collect the amount of the disk memory in use:
 
 DSK_USG=`df -BM -P --total | grep total | awk '{print $3}' | sed s/M/\/`
 
@@ -51,7 +51,7 @@ CPU_USG=`iostat -ch --pretty | sed -n '4p' | awk '{ printf("%.1f%%\n", 100.0 - $
 LST_BOOT_DT=`who -b | awk '{ print $4}'`
 LST_BOOT_HR=`who -b | awk '{ print $5}'`
 
-# Check if there is any logical partition in your disk:
+# Check to see if there is any logical partition in your disk:
 
 LVM_CHECK=`lsblk | grep -o "lvm" | awk 'NF==1 { if ($1 == "lvm") { print "yes"; exit; } else { print "no"; exit; } }'`
 
@@ -67,7 +67,7 @@ USR_CNT=`who -q | grep -o '[0-9]*'`
 
 IP_ADRS=`hostname -I`
 
-# Collect and display machine's MAC address:
+# Collect and display the machine's MAC address:
 
 MAC_ADRS=`ip -o link show | sed -n '2p' | awk '{ print $17 }'`
 
@@ -92,12 +92,12 @@ wall "#Architecture: ${HW}
 
 # Notes:
 
-# - You need to install sysstat package in order to use 'iostat' command.
-# - You need to install netstat package in order to use 'netstat' command;
+# - You need to install the sysstat package in order to use the 'iostat' command.
+# - You need to install the netstat package in order to use the 'netstat' command;
 # alternatively, you may to substitute 'netstat' by 'ss -l'.
 # - You need to configure your sudoers file via 'sudo visudo' in order to get 
 # the number of commands executed with the sudo program;
-# to do that, follow the steps bellow:
+# to do that, follow the steps below:
 # 1) 'sudo mkdir /var/log/sudo/sudo.log'
 # 2) Open your sudoers file with 'sudo visudo':
 # 3) Add the following lines to the file:
