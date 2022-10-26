@@ -8,80 +8,53 @@
 # It was created as a part of the "born2beroot" project of the 42 School.
 # Check the notes at the end of this file for additional information about how this script works.
 
-# Set up variables and colletc informatiom:
-
-# Displays the operating system's architecture and kernel version:
-
+# Operating system's architecture and kernel version:
 HW=`uname -a`
 
-# Count the number of processors in the machine:
-
+# Number of processors.
 CPU=`grep -c process /proc/cpuinfo`
 
-# Collect the amount of RAM in use:
+# Current available RAM on your server and its utilization rate as a percentage. 
+MEM_USG=`free -m | grep "Mem" | awk '{print $3"/"$2"MB"}'`
+MEM_USG_PRCNT=`free -m | grep "Mem" | awk '{printf("(%.2f%%)\n", $3 * 100 / $2)}' | sed s/,/./`
 
-MEM_USG=`free -m | grep Mem | awk '{print $3}'`
+# Current available memory on your server and its utilization rate as a percentage.
+DSK_USG=`df -BM -P --total | grep "total" | awk '{print $3"/"}' | sed s/M/\/`
+DSK_SIZE=`df -BG -P --total | grep "total" | awk '{print $2"Gb"}' | sed s/G/\/`
+DSK_USG_PRCNT=`df -BG -P --total | grep "total" | awk '{ printf("(%.1f%%)\n", $3 / $2 * 100.0) }' | sed s/,/./`
 
-# Collect the total RAM:
-
-MEM_SIZE=`free -m | grep Mem | awk '{print $2}'`
-
-# Show the amount of RAM in use as a percentage:
-
-MEM_USG_PRCNT=`free -m | grep Mem | awk '{ printf("%.2f%%\n", $3 * 100 / $2) }' | sed s/,/./g`
-
-# Collect the amount of the disk memory in use:
-
-DSK_USG=`df -BM -P --total | grep total | awk '{print $3}' | sed s/M/\/`
-
-# Collect the total disk size:
-
-DSK_SIZE=`df -BG -P --total | grep total | awk '{print $2}' | sed s/M/\/`
-
-# Display the current disk memory in use as a percentage:
-
-DSK_USG_PRCNT=`df -BG -P --total | grep total | awk '{ printf("%.1f%%\n", $3/$2 * 100.0) }' | sed s/,/./g`
-
-# Display the amount of CPU in use as a percentage:
-
+# Current utilization rate of your processors as a percentage.
 CPU_USG=`iostat -ch --pretty | sed -n '4p' | awk '{ printf("%.1f%%\n", 100.0 - $6) }' | sed s/,/./`
 
-# Display the last date and hour of the last machine's boot:
-
+# Date and time of the last boot.
 LST_BOOT_DT=`who -b | awk '{ print $4}'`
 LST_BOOT_HR=`who -b | awk '{ print $5}'`
 
-# Check to see if there is any logical partition in your disk:
-
+# Wether LVM is active or not.
 LVM_CHECK=`lsblk | grep -o "lvm" | awk 'NF==1 { if ($1 == "lvm") { print "yes"; exit; } else { print "no"; exit; } }'`
 
-# Count the number of active TCP connections:
+# Active TCP connections:
+TCP_CON=`ss | grep -c "tcp"`
 
-TCP_CON=`netstat | grep -c tcp`
+# Users using the server.
+USR_CNT=`who | cut -d " " -f 1 | sort -u | wc -l`
 
-# Collect the number of users current logged on the server:
-
-USR_CNT=`who -q | grep -o '[0-9]*'`
-
-# Display the machine's IP address:
-
+# IPv4 address.
 IP_ADRS=`hostname -I`
 
-# Collect and display the machine's MAC address:
-
+# MAC (Media Access Control) address:
 MAC_ADRS=`ip -o link show | sed -n '2p' | awk '{ print $17 }'`
 
-# Collect and display the number of commands executed with the sudo program:
+# Number of commands executed with the sudo program:
+SUDO_CNT=`grep -c "sudo " /var/log/auth.log`
 
-SUDO_CNT=`cat /var/log/sudo/sudo.log | wc -l | awk '{print ($f1/2)}'`
-
-# Send system information message to all terminals of the server:
+# Send a message to all terminals of the server:
 
 wall "#Architecture: ${HW}
 #CPU physical : ${CPU}
 #vCPU : ${CPU}
-#Memory Usage: ${MEM_USG}/${MEM_SIZE}MB (${MEM_USG_PRCNT})
-#Disk Usage: ${DSK_USG}/${DSK_SIZE}b (${DSK_USG_PRCNT})
+#Memory Usage: ${MEM_USG} ${MEM_USG_PRCNT}
+#Disk Usage: ${DSK_USG}${DSK_SIZE} ${DSK_USG_PRCNT}
 #CPU load: ${CPU_USG}
 #Last boot: ${LST_BOOT_DT} ${LST_BOOT_HR}
 #LVM use: ${LVM_CHECK}
