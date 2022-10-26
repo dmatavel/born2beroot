@@ -65,15 +65,14 @@ wall "#Architecture: ${HW}
 
 # Notes:
 
-# - You need to install the sysstat package in order to use the 'iostat' command.
-# - You need to install the netstat package in order to use the 'netstat' command;
-# alternatively, you may to substitute 'netstat' by 'ss -l'.
-# - You need to configure your sudoers file via 'sudo visudo' in order to get 
+# 1) You need to install the sysstat package in order to use the 'iostat' command.
+# 2) You need to configure your sudoers file via 'sudo visudo' in order to get 
 # the number of commands executed with the sudo program;
 # to do that, follow the steps below:
-# 1) 'sudo mkdir /var/log/sudo/sudo.log'
-# 2) Open your sudoers file with 'sudo visudo':
-# 3) Add the following lines to the file:
+# 2.1) 'sudo mkdir /var/log/sudo/sudo.log'
+# 2.2) Open your sudoers file with 'sudo visudo':
+# 2.3) Add the following lines to the file:
 #	Defaults        logfile="/var/log/sudo/sudo.log"
-#	Defaults        log_input,log_output
+#	Defaults        log_input
+# Defaults        log_output
 #	Defaults        iolog_dir="/var/log/sudo"
