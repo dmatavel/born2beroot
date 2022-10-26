@@ -72,7 +72,7 @@ wall "#Architecture: ${HW}
 # 2.1) 'sudo mkdir /var/log/sudo/sudo.log'
 # 2.2) Open your sudoers file with 'sudo visudo':
 # 2.3) Add the following lines to the file:
-#	Defaults        logfile="/var/log/sudo/sudo.log"
-#	Defaults        log_input
+# Defaults  logfile="/var/log/sudo/sudo.log"
+# Defaults  log_input
 # Defaults  log_output
-#	Defaults        iolog_dir="/var/log/sudo"
+# Defaults  iolog_dir="/var/log/sudo"
