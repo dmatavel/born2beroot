@@ -74,5 +74,5 @@ wall "#Architecture: ${HW}
 # 2.3) Add the following lines to the file:
 #	Defaults        logfile="/var/log/sudo/sudo.log"
 #	Defaults        log_input
-# Defaults        log_output
+# Defaults				log_output
 #	Defaults        iolog_dir="/var/log/sudo"
