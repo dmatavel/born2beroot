@@ -49,7 +49,6 @@ MAC_ADRS=`ip -o link show | sed -n '2p' | awk '{ print $17 }'`
 SUDO_CNT=`grep -c "sudo " /var/log/auth.log`
 
 # Send a message to all terminals of the server:
-
 wall "#Architecture: ${HW}
 #CPU physical : ${CPU}
 #vCPU : ${CPU}
