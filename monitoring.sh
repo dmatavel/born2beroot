@@ -6,7 +6,6 @@
 
 # This script displays a message with important system information to all terminals of a Debian-based server.
 # It was created as a part of the "born2beroot" project of the 42 School.
-# Check the notes at the end of this file for additional information about how this script works.
 
 # Operating system's architecture and kernel version:
 HW=`uname -a`
@@ -46,9 +45,10 @@ IP_ADRS=`hostname -I`
 MAC_ADRS=`ip -o link show | sed -n '2p' | awk '{ print $17 }'`
 
 # Number of commands executed with the sudo program:
-SUDO_CNT=`grep -c "sudo " /var/log/auth.log`
+SUDO_CNT=`grep -c "COMMAND" /var/log/sudo/sudo.log`
 
 # Send a message to all terminals of the server:
+
 wall "#Architecture: ${HW}
 #CPU physical : ${CPU}
 #vCPU : ${CPU}
@@ -61,17 +61,3 @@ wall "#Architecture: ${HW}
 #User log: ${USR_CNT}
 #Network: ${IP_ADRS} IP (${MAC_ADRS})
 #Sudo : ${SUDO_CNT} cmd"
-
-# Notes:
-
-# 1) You need to install the sysstat package in order to use the 'iostat' command.
-# 2) You need to configure your sudoers file via 'sudo visudo' in order to get 
-# the number of commands executed with the sudo program;
-# to do that, follow the steps below:
-# 2.1) 'sudo mkdir /var/log/sudo/sudo.log'
-# 2.2) Open your sudoers file with 'sudo visudo':
-# 2.3) Add the following lines to the file:
-# Defaults  logfile="/var/log/sudo/sudo.log"
-# Defaults  log_input
-# Defaults  log_output
-# Defaults  iolog_dir="/var/log/sudo"
